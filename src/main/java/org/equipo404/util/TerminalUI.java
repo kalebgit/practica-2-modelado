@@ -143,4 +143,28 @@ public class TerminalUI {
         return choice;
     }
 
+    public static void print(String message) {
+        System.out.println(message);
+    }
+
+    public static String inputString(String prompt) {
+        System.out.print(prompt + " ");
+        return scanner.nextLine();
+    }
+
+    public static int inputInt(String prompt) {
+        int number;
+        while (true) {
+            System.out.print(prompt + " ");
+            if (scanner.hasNextInt()) {
+                number = scanner.nextInt();
+                scanner.nextLine(); // Limpiar el buffer
+                return number;
+            } else {
+                scanner.nextLine(); // Descartar entrada inválida
+                error("Entrada inválida. Por favor, ingrese un número.");
+            }
+        }
+    }
+
 }

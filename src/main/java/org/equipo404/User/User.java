@@ -44,7 +44,7 @@ public class User extends Context<User> implements Observer {
 
     @Override
     public void update(String message) {
-        TerminalUI.info("📩 Mensaje recibido a [" + this + "]: " + message);
+        TerminalUI.printNotification("📩 Mensaje recibido a [" + this + "]: " + message);
     }
 
     public BorrowType getBorrowType() {
