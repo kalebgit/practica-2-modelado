@@ -6,6 +6,7 @@ import org.equipo404.DesignPatterns.Observer;
 import org.equipo404.Library.DocumentState;
 import org.equipo404.Library.DocumentTemplate;
 import org.equipo404.Library.Resource;
+import org.equipo404.util.TerminalUI;
 
 import java.util.Arrays;
 
@@ -43,7 +44,7 @@ public class User extends Context<User> implements Observer {
 
     @Override
     public void update(String message) {
-        System.out.println("Mensaje recibido a [" + this + "]: " + message);
+        TerminalUI.info("📩 Mensaje recibido a [" + this + "]: " + message);
     }
 
     public BorrowType getBorrowType() {
