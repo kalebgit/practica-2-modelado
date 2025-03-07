@@ -9,4 +9,8 @@ public class Borrowed extends DocumentState {
         return false;
     }
 
+    @Override
+    public String toString() {
+        return "❌ Prestado";
+    }
 }

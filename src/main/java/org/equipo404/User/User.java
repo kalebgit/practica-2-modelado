@@ -7,10 +7,12 @@ import org.equipo404.Library.DocumentState;
 import org.equipo404.Library.DocumentTemplate;
 import org.equipo404.Library.Resource;
 
-public class User extends Context implements Observer {
+import java.util.Arrays;
+
+public class User extends Context<User> implements Observer {
     private int id;
     private String email;
-    private Resource resourceBorrowed;
+    private DocumentTemplate documentBorrowed;
     private UserState state;
     private BorrowType borrowType;
 
@@ -34,8 +36,10 @@ public class User extends Context implements Observer {
 
 
     public void returnBorrowedDoc(){
-
+        state.returnBorrowedDoc();
     }
+
+    //getters y setters
 
     @Override
     public void update(String message) {
@@ -50,12 +54,24 @@ public class User extends Context implements Observer {
         this.borrowType = borrowType;
     }
 
-    public Resource getResourceBorrowed() {
-        return resourceBorrowed;
+    public DocumentTemplate getDocumentBorrowed() {
+        return documentBorrowed;
     }
 
-    public void setResourceBorrowed(Resource resourceBorrowed) {
-        this.resourceBorrowed = resourceBorrowed;
+    public void setDocumentBorrowed(DocumentTemplate documentBorrowed) {
+        this.documentBorrowed = documentBorrowed;
     }
 
+    @Override
+    public String toString() {
+        String content = "👤 Usuario: " + email + "\n" +
+                "🔖 Estado: " + state + "\n" +
+                "📚 Préstamos: " + documentBorrowed == null? "Ninguno" : String.valueOf(documentBorrowed);
+        int maxLength = Arrays.stream(content.split("\n")).mapToInt(String::length).max().orElse(0) + 4;
+        String border = "┌" + "─".repeat(maxLength) + "┐";
+        String formattedContent = Arrays.stream(content.split("\n"))
+                .map(line -> "│ " + line + " ".repeat(maxLength - line.length() - 2) + "│")
+                .reduce("", (a, b) -> a + "\n" + b);
+        return border + formattedContent + "\n" + "└" + "─".repeat(maxLength) + "┘";
+    }
 }

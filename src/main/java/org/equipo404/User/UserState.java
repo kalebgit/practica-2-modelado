@@ -5,7 +5,7 @@ import org.equipo404.DesignPatterns.Context;
 import org.equipo404.DesignPatterns.State;
 import org.equipo404.Library.DocumentTemplate;
 
-public abstract class UserState implements State {
+public abstract class UserState implements State<User> {
 
    private User context;
    @Override

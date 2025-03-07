@@ -1,5 +1,6 @@
 package org.equipo404.User;
 
+import org.equipo404.Library.Available;
 import org.equipo404.Library.DocumentTemplate;
 
 public class Irregular extends UserState {
@@ -11,7 +12,15 @@ public class Irregular extends UserState {
 
     @Override
     void returnBorrowedDoc() {
-        System.out.println("El usuario " + context() + " no tiene nada prestado");
+        System.out.println(" emoji enojado, no es posbile que el usuario " + context() + " se haya tardado tanto en devolver el documento");
+        context().getDocumentBorrowed().changeState(new Available());
+        context().getDocumentBorrowed().checkWaitingUsers();
+        context().changeState(new Regular());
+        context().setDocumentBorrowed(null);
     }
 
+    @Override
+    public String toString() {
+        return "❌ Moroso";
+    }
 }

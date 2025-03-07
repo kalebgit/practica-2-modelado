@@ -5,7 +5,7 @@ package org.equipo404.DesignPatterns;
  * @autores: Emiliano Kaleb Jimenez Rivera. Bedoya Tellez Ariadna Valeria. Sanchez Soto Saul
  * @version 1.0
  */
-public interface State<T extends Context> {
+public interface State<T extends Context<T>> {
     T context();
 }
 
