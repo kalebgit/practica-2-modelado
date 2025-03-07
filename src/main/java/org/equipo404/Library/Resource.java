@@ -11,4 +11,12 @@ public abstract class Resource {
     public void setResourceCategory(ResourceCategory resourceCategory) {
         ResourceCategory = resourceCategory;
     }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
 }

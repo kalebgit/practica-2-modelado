@@ -59,9 +59,19 @@ public class User extends Context<User> implements Observer {
         return documentBorrowed;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public void setDocumentBorrowed(DocumentTemplate documentBorrowed) {
         this.documentBorrowed = documentBorrowed;
     }
+
+
 
     @Override
     public String toString() {
