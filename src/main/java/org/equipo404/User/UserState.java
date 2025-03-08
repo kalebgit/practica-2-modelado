@@ -7,11 +7,16 @@ import org.equipo404.Library.DocumentTemplate;
 
 public abstract class UserState implements State<User> {
 
-   private User context;
+   protected User context;
    @Override
    public User  context() {
       return  this.context;
    }
-    abstract void borrow(DocumentTemplate doc, BorrowType borrowType);
+
+   @Override
+   public void setContext(User context) {
+      this.context = context;
+   }
+    protected abstract void borrow(DocumentTemplate doc, BorrowType borrowType);
    abstract void returnBorrowedDoc();
 }

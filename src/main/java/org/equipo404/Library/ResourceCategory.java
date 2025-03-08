@@ -1,7 +1,7 @@
 package org.equipo404.Library;
 
 public enum ResourceCategory {
-    CIENCIA("Ciencia"), BUSINESS("Business"), ARTE("Arte"), SALUD("Salud");
+    CIENCIA("Ciencia"), BUSINESS("Business"), ARTE("Arte"), SALUD("Salud"), LITERATURA("Literatura");
     private String name;
 
      ResourceCategory(String name){

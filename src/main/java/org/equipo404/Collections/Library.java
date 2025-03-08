@@ -1,5 +1,12 @@
 package org.equipo404.Collections;
 
+import org.equipo404.Library.DocumentTemplate;
+import org.equipo404.Library.Resource;
+import org.equipo404.Library.ResourceCategory;
+import org.equipo404.User.BorrowType;
+import org.equipo404.User.User;
+import org.equipo404.util.TerminalUI;
+
 import java.util.List;
 /**
  * Representa una biblioteca que contiene múltiples colecciones de recursos.
@@ -10,22 +17,22 @@ import java.util.List;
  * @version 1.0
  */
 
-public class Library {
+
+public class Library<T extends Resource>{
     /**
      * Lista de colecciones de recursos dentro de la biblioteca.
      */
 
-    private List<ResourceCollection<?>> resourceCollections;
-    /**
+    private List<ResourceCollection<? extends T>> resourceCollections;
+
+/**
      * Constructor de la biblioteca.
      *
      * @param resourceCollections Lista de colecciones de recursos en la biblioteca.
      */
-
-    public Library(List<ResourceCollection<?>> resourceCollections) {
+    public Library(List<ResourceCollection<? extends T>> resourceCollections) {
         this.resourceCollections = resourceCollections;
     }
-
     /**
      * Muestra todos los recursos de la biblioteca en un formato bonito.
      */
@@ -34,7 +41,16 @@ public class Library {
         System.out.println("    📚 RECURSOS DE LA BIBLIOTECA    ");
         System.out.println("═══════════════════════════");
 
-        for (ResourceCollection<?> collection : resourceCollections) {
+        if (resourceCollections == null || resourceCollections.isEmpty()) {
+            TerminalUI.error("⚠️ Error: La lista de colecciones está vacía.");
+            return;
+        }
+
+
+        for (ResourceCollection<? extends T> collection : resourceCollections) {
+            if(resourceCollections == null){
+                TerminalUI.error("esta vacia colecciones");
+            }
             System.out.println(collection.toString());
         }
     }
@@ -63,4 +79,77 @@ public class Library {
             System.out.printf("%d. %s%n", i + 1, resourceCollections.get(i).getClass().getSimpleName());
         }
     }
+
+    /**
+     * Encuentra un recurso por su título
+     * @param title Título del recurso a buscar
+     * @return Recurso encontrado o null si no existe
+     */
+    public Resource findResourceByTitle(String title) {
+        for (ResourceCollection<?> collection : resourceCollections) {
+            for (Resource resource : collection) {
+                if (resource.getTitle().equalsIgnoreCase(title)) {
+                    return resource;
+                }
+            }
+        }
+        return null;
+    }
+
+
+    public Resource findResourceById(int id){
+        for (ResourceCollection<?> collection : resourceCollections) {
+            for (Resource resource : collection) {
+                if (resource.getId() == id) {
+                    return resource;
+                }
+            }
+        }
+        return null;
+
+    }
+
+    /**
+     * Realiza el préstamo de un material a un usuario
+     * @param user Usuario que solicita el préstamo
+     * @param borrowType Tipo de préstamo (Regular o Express)
+     * @param document Documento específico en el formato solicitado
+     * @return true si el préstamo fue exitoso, false en caso contrario
+     */
+    public boolean borrowMaterial(User user, BorrowType borrowType, DocumentTemplate document) {
+        if (document == null) {
+            TerminalUI.error("El material solicitado no existe en la biblioteca.");
+            return false;
+        }
+
+        user.borrow(document, borrowType);
+        return true;
+    }
+
+    /**
+     * Reserva un material para un usuario
+     * @param user Usuario que solicita la reserva
+     * @param document Documento específico en el formato solicitado
+     */
+    public void reserveMaterial(User user, DocumentTemplate document) {
+        if (document == null) {
+            TerminalUI.error("El material solicitado no existe en la biblioteca.");
+            return;
+        }
+        document.reserve(user);
+    }
+
+    public void returnMaterial(User user, int id) {
+        if (user.getDocumentBorrowed() != null && user.getDocumentBorrowed().getResource().getId() == id) {
+            user.returnBorrowedDoc();
+            TerminalUI.success("Material devuelto a la biblioteca.");
+        } else {
+            TerminalUI.error("No tienes ese material prestado.");
+        }
+    }
+
+    public List<ResourceCollection<? extends T>> getResourceCollections() {
+        return resourceCollections;
+    }
+
 }
