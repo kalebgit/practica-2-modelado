@@ -8,11 +8,24 @@ import org.equipo404.User.ExpressBorrow;
 import org.equipo404.User.LongBorrow;
 import org.equipo404.Library.*;
 import java.util.Random;
+/**
+ * Clase principal que ejecuta la simulación del sistema de biblioteca digital.
+ * 
+ * @autores Emiliano Kaleb Jimenez Rivera, Bedoya Tellez Ariadna Valeria, Sanchez Soto Saul
+ * @version 1.0
+ */
 
 
 import java.util.*;
 
 public class Main {
+
+    /**
+     * Método principal que inicia la ejecución del programa.
+     * 
+     * @param args Argumentos de la línea de comandos (no utilizados).
+     */
+
     public static int amountDocs = 0;
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -74,6 +87,12 @@ public class Main {
         // ============================
         showMenu(scanner, library, users, borrowedDays, currentDay);
     }
+    /**
+     * Llena la biblioteca con documentos digitales.
+     * 
+     * @param library Biblioteca a llenar.
+     * @return Lista de documentos generados.
+     */
 
 
     // Método ajustado para crear documentos
@@ -82,13 +101,28 @@ public class Main {
         if (resource == null) {
             return null;
         }
-        return switch (formatType) {
-            case 1 -> new PDFDocument(resource, new Available());
-            case 2 -> new EPUBDocument(resource, new Available());
-            case 3 -> new MOBIDocument(resource, new Available());
-            default -> new PDFDocument(resource, new Available());
+        return docs;
+    }
+    /**
+     * Crea un documento digital aleatorio a partir de un recurso.
+     * 
+     * @param src Recurso base.
+     * @return Documento generado.
+     */
+    private static DocumentTemplate buildDoc(Resource src) {
+        Random rand = new Random();
+        return switch (rand.nextInt(3) + 1) {  // Se asegura de que el número esté entre 1 y 3
+            case 1 -> new PDFDocument(src, new Available());
+            case 2 -> new EPUBDocument(src, new Available());
+            case 3 -> new MOBIDocument(src, new Available());
+            default -> new PDFDocument(src, new Available()); // Nunca se ejecutará, pero es buena práctica
         };
     }
+    /**
+     * Crea y devuelve una lista de colecciones de recursos.
+     * 
+     * @return Lista de colecciones de recursos.
+     */
 
 
     private static List<ResourceCollection<? extends Resource>> createResourceCollection() {
@@ -297,6 +331,11 @@ public class Main {
     private static User getUserById(int id, List<User> users) {
         return users.stream().filter(u -> u.getId() == id).findFirst().orElse(null);
     }
+    /**
+     * Muestra la lista de usuarios registrados.
+     * 
+     * @param users Lista de usuarios.
+     */
     private static void showAllUsers(List<User> users) {
         TerminalUI.info("Lista de Usuarios:");
 
