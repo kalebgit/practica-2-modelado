@@ -8,11 +8,28 @@ import org.equipo404.User.User;
 import org.equipo404.util.TerminalUI;
 
 import java.util.List;
+/**
+ * Representa una biblioteca que contiene múltiples colecciones de recursos.
+ *
+ * @author Emiliano Kaleb Jimenez Rivera
+ * @author Bedoya Tellez Ariadna Valeria
+ * @author Sanchez Soto Saul
+ * @version 1.0
+ */
+
 
 public class Library<T extends Resource>{
+    /**
+     * Lista de colecciones de recursos dentro de la biblioteca.
+     */
 
     private List<ResourceCollection<? extends T>> resourceCollections;
 
+/**
+     * Constructor de la biblioteca.
+     *
+     * @param resourceCollections Lista de colecciones de recursos en la biblioteca.
+     */
     public Library(List<ResourceCollection<? extends T>> resourceCollections) {
         this.resourceCollections = resourceCollections;
     }
