@@ -25,6 +25,7 @@ public class Regular extends UserState{
                 " y devolverlo a tiempo");
         DocumentTemplate doc = context().getDocumentBorrowed();
         doc.changeState(new Available());
+        doc.getDocumentState().setContext(doc);
         doc.checkWaitingUsers();
         context().setDocumentBorrowed(null);
     }

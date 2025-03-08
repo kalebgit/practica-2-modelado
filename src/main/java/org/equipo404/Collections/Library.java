@@ -2,11 +2,11 @@ package org.equipo404.Collections;
 
 import org.equipo404.Library.DocumentTemplate;
 import org.equipo404.Library.Resource;
+import org.equipo404.Library.ResourceCategory;
 import org.equipo404.User.BorrowType;
 import org.equipo404.User.User;
 import org.equipo404.util.TerminalUI;
 
-import java.security.interfaces.RSAKey;
 import java.util.List;
 
 public class Library<T extends Resource>{
@@ -38,14 +38,6 @@ public class Library<T extends Resource>{
         }
     }
 
-//    private int getCollectionSize(ResourceCollection<? extends T> collection) {
-//        int size = 0;
-//        for (T resource : collection) {
-//            size++;
-//        }
-//        return size;
-//    }
-//
     /**
      * Muestra una sección específica de la biblioteca.
      */
@@ -127,7 +119,6 @@ public class Library<T extends Resource>{
             TerminalUI.error("El material solicitado no existe en la biblioteca.");
             return;
         }
-
         document.reserve(user);
     }
 
@@ -145,4 +136,3 @@ public class Library<T extends Resource>{
     }
 
 }
-

@@ -50,7 +50,6 @@ public class User extends Context<User> implements Observer {
         state.returnBorrowedDoc();
     }
 
-    //getters y setters
 
     @Override
     public void update(String message) {
@@ -89,6 +88,9 @@ public class User extends Context<User> implements Observer {
         this.documentBorrowed = documentBorrowed;
     }
 
+    public UserState getState() {
+        return state;
+    }
 
 
     @Override

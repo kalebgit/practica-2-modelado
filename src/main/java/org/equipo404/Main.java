@@ -154,7 +154,8 @@ public class Main {
                     "Devolver material",
                     "Reservar material",
                     "Ver estado del usuario",
-                    "Simular paso de días");
+                    "Simular paso de días",
+                    "Renovar prestamo");
 
             switch (option) {
                 case 1 -> library.showLibraryResources(); // Usar showLibraryResources
@@ -171,19 +172,23 @@ public class Main {
                 case 3 -> handleBorrow(scanner, library, users, borrowedDays, currentDay);
                 case 4 -> handleReturn(scanner, library, users, borrowedDays);
                 case 5 -> handleReservation(scanner, library, users);
-                case 6 -> handleUserStatus(scanner, users);
+                case 6 -> handleUserStatus(users);
                 case 7 -> {
                     TerminalUI.print("Ingrese la cantidad de días a avanzar:");
                     int days = scanner.nextInt();
                     scanner.nextLine();
                     currentDay += days;
                     for (User user : users) {
-                        if (borrowedDays.containsKey(user) && user.getBorrowType() != null) {
+                        if (user.getDocumentBorrowed() != null && user.getBorrowType() != null) {
                             user.getBorrowType().substractDaysLet(days);
                         }
                     }
                     TerminalUI.success("Tiempo avanzado: " + days + " días");
+                    for (User user : users){
+                        user.checkRegularity();
+                    }
                 }
+                case 8 -> handleRenewal(users);
                 case 0 -> {
                     TerminalUI.success("Saliendo...");
                     return;
@@ -194,8 +199,7 @@ public class Main {
     }
 
     private static void handleBorrow(Scanner scanner, Library library, List<User> users, Map<User, Integer> borrowedDays, int currentDay) {
-        TerminalUI.print("Ingrese su ID de usuario:");
-        User user = getUserById(scanner, users);
+        User user = getUserById(TerminalUI.inputInt("Ingrese su ID de usuario:"), users);
         if (user == null) return;
 
         int id = TerminalUI.inputInt("Ingrese el id del material a prestar:");
@@ -229,8 +233,7 @@ public class Main {
     }
 
     private static void handleReturn(Scanner scanner, Library library, List<User> users, Map<User, Integer> borrowedDays) {
-        TerminalUI.print("Ingrese su ID de usuario:");
-        User user = getUserById(scanner, users);
+        User user = getUserById(TerminalUI.inputInt("Ingrese su ID de usuario:"), users);
         if (user == null) return;
 
         int id = TerminalUI.inputInt("Ingrese el id del material a devolver:");
@@ -240,8 +243,7 @@ public class Main {
     }
 
     private static void handleReservation(Scanner scanner, Library library, List<User> users) {
-        TerminalUI.print("Ingrese su ID de usuario:");
-        User user = getUserById(scanner, users);
+        User user = getUserById(TerminalUI.inputInt("Ingrese su ID de usuario:"), users);
         if (user == null) return;
 
         int id = TerminalUI.inputInt("Ingrese el id del material a reservar:");
@@ -264,17 +266,36 @@ public class Main {
         TerminalUI.success("Material reservado con éxito en formato " + formatName);
     }
 
-    private static void handleUserStatus(Scanner scanner, List<User> users) {
-        TerminalUI.print("Ingrese su ID de usuario:");
-        User user = getUserById(scanner, users);
+    private static void handleRenewal(List<User> users) {
+        User user = getUserById(TerminalUI.inputInt("Ingrese ID de usuario"), users);
+        if (user == null) return;
+
+        DocumentTemplate borrowedDocument = user.getDocumentBorrowed();
+        if (borrowedDocument == null) {
+            TerminalUI.warning("No tiene préstamos activos para renovar.");
+            return;
+        }
+
+        BorrowType borrowType = user.getBorrowType();
+        if (borrowType instanceof LongBorrow longBorrow) {
+            if (longBorrow.renew()) {
+                TerminalUI.success("Su préstamo ha sido renovado con éxito. Nuevo tiempo: " + longBorrow.getDaysLeft() + " días.");
+            } else {
+                TerminalUI.error("No se pudo renovar el préstamo. Ya alcanzó el máximo de renovaciones.");
+            }
+        } else {
+            TerminalUI.warning("Solo los préstamos de tipo LongBorrow pueden renovarse.");
+        }
+    }
+
+    private static void handleUserStatus(List<User> users) {
+        User user = getUserById(TerminalUI.inputInt("Ingrese su ID de usuario:"), users);
         if (user == null) return;
         TerminalUI.print(user.toString());
     }
 
-    private static User getUserById(Scanner scanner, List<User> users) {
-        int userId = scanner.nextInt();
-        scanner.nextLine();
-        return users.stream().filter(u -> u.getId() == userId).findFirst().orElse(null);
+    private static User getUserById(int id, List<User> users) {
+        return users.stream().filter(u -> u.getId() == id).findFirst().orElse(null);
     }
     private static void showAllUsers(List<User> users) {
         TerminalUI.info("Lista de Usuarios:");

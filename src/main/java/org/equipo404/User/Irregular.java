@@ -18,7 +18,9 @@ public class Irregular extends UserState {
         DocumentTemplate doc = context().getDocumentBorrowed();
         doc.changeState(new Available());
         doc.checkWaitingUsers();
+        doc.getDocumentState().setContext(doc);
         context().changeState(new Regular());
+        context().getState().setContext(context());
         context().setDocumentBorrowed(null);
     }
     @Override

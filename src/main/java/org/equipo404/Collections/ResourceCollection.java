@@ -21,6 +21,8 @@ public abstract class ResourceCollection<T extends Resource> implements Iterable
         this.iteratorStrategy = iteratorStrategy;
     }
 
+
+
     @Override
     public Iterator<T> iterator(){
         return this.iteratorStrategy;
@@ -44,4 +46,7 @@ public abstract class ResourceCollection<T extends Resource> implements Iterable
         }
         sb.append("+------------------+");
         return sb.toString();
-    }}
+    }
+
+
+}
