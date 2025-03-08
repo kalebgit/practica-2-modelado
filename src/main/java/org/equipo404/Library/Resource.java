@@ -48,4 +48,13 @@ public abstract class Resource {
     public int hashCode() {
         return Objects.hashCode(id);
     }
+
+    @Override
+    public String toString() {
+        return "Resource{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", ResourceCategory=" + ResourceCategory +
+                '}';
+    }
 }

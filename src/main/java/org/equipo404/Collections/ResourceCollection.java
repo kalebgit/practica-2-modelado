@@ -22,6 +22,11 @@ public abstract class ResourceCollection<T extends Resource> implements Iterable
     }
 
     @Override
+    public Iterator<T> iterator(){
+        return this.iteratorStrategy;
+    }
+
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("+------------------+\n");
@@ -31,7 +36,7 @@ public abstract class ResourceCollection<T extends Resource> implements Iterable
         boolean hasElements = false;
         for (T elemento : this) {
             hasElements = true;
-            sb.append("| ").append(String.format("%-21s", "ID: "+elemento.getId()+elemento.getTitle())).append("|\n"); // getTitle() en lugar de toString()
+            sb.append("| ").append(String.format("%-21s", elemento)).append("|\n"); // getTitle() en lugar de toString()
         }
 
         if (!hasElements) {

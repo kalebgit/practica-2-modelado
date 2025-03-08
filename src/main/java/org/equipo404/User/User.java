@@ -35,8 +35,16 @@ public class User extends Context<User> implements Observer {
 
     public void changeState(UserState state) {
         this.state = state;
+        this.state.setContext(this);
     }
 
+    public void checkRegularity(){
+        int daysLeft = this.getDaysLeftToDeadline();
+        if(daysLeft < 0){
+            changeState(new Irregular());
+            TerminalUI.error("😡Ahora el usuario + " + this.getEmail() + " moroso por tener "  + (-daysLeft) + " dias de retraso");
+        }
+    }
 
     public void returnBorrowedDoc(){
         state.returnBorrowedDoc();

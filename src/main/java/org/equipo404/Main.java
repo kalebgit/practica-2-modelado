@@ -45,7 +45,8 @@ public class Main {
         borrowedDays.put(carlos, currentDay);
         currentDay += 30;
         carlos.getBorrowType().substractDaysLet(30);
-        TerminalUI.warning("Carlos ahora es moroso y no puede pedir más libros");
+        carlos.checkRegularity();
+        library.borrowMaterial(carlos, new ExpressBorrow(), createDocument(library, 4, 2));
 
         // CASO 2: Mariana pide un libro
         TerminalUI.info("Mariana solicita 'Cálculo Avanzado' con préstamo normal");
@@ -64,6 +65,7 @@ public class Main {
         library.reserveMaterial(ana, cienSoledad);
 
         // Se envia notificacion cuando
+        library.returnMaterial(jorge, 3);
 
         TerminalUI.success("FIN DE SIMULACIÓN");
 
@@ -95,29 +97,29 @@ public class Main {
         // Libros
         ArrayList<Book> booksList = new ArrayList<>();
         booksList.add(new Book(amountDocs, "El algoritmo infinito", ResourceCategory.CIENCIA));
-        booksList.add(new Book(amountDocs++, "La guía del programador", ResourceCategory.BUSINESS));
-        booksList.add(new Book(amountDocs++, "Mentes brillantes", ResourceCategory.ARTE));
-        booksList.add(new Book(amountDocs++, "Cien años de soledad", ResourceCategory.LITERATURA));
+        booksList.add(new Book(++amountDocs, "Mentes brillantes", ResourceCategory.ARTE));
+        booksList.add(new Book(++amountDocs, "Cien años de soledad", ResourceCategory.LITERATURA));
+        booksList.add(new Book(++amountDocs, "La guía del programador", ResourceCategory.CIENCIA));
 
         BooksCollection booksCollection = new BooksCollection(
-                new CategoryIterator<>(booksList, ResourceCategory.CIENCIA), booksList);
+                new NormalIterator<>(booksList), booksList);
 
         // Revistas
         Magazine[] magazinesArray = {
-                new Magazine(amountDocs++, "Historia en papel", ResourceCategory.CIENCIA),
-                new Magazine(amountDocs++, "Descifrando el pasado", ResourceCategory.SALUD)
+                new Magazine(++amountDocs, "Historia en papel", ResourceCategory.CIENCIA),
+                new Magazine(++amountDocs, "Descifrando el pasado", ResourceCategory.SALUD)
         };
 
         MagazinesCollection magazinesCollection = new MagazinesCollection(
-                new CategoryIterator<>(Arrays.stream(magazinesArray).toList(), ResourceCategory.SALUD), magazinesArray);
+                new NormalIterator<>(Arrays.stream(magazinesArray).toList()), magazinesArray);
 
         // Audiolibros
         Hashtable<AudioBook, Integer> audiobooksTable = new Hashtable<>();
-        audiobooksTable.put(new AudioBook(amountDocs++, "Filosofía moderna", ResourceCategory.ARTE), 1);
-        audiobooksTable.put(new AudioBook(amountDocs++, "La ciencia de lo imposible", ResourceCategory.CIENCIA), 1);
+        audiobooksTable.put(new AudioBook(++amountDocs, "Filosofía moderna", ResourceCategory.ARTE), 1);
+        audiobooksTable.put(new AudioBook(++amountDocs, "La ciencia de lo imposible", ResourceCategory.CIENCIA), 1);
 
         AudioBooksCollection audioBooksCollection = new AudioBooksCollection(
-                new CategoryIterator<>(audiobooksTable.keySet().stream().toList(), ResourceCategory.ARTE), audiobooksTable);
+                new NormalIterator<>(audiobooksTable.keySet().stream().toList()), audiobooksTable);
 
 
         // Agregar colecciones a la biblioteca
