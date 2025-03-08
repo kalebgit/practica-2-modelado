@@ -2,6 +2,7 @@ package org.equipo404.Library;
 
 import org.equipo404.DesignPatterns.Context;
 import org.equipo404.DesignPatterns.Subject;
+import org.equipo404.User.LongBorrow;
 import org.equipo404.User.User;
 import org.equipo404.util.TerminalUI;
 
@@ -53,6 +54,14 @@ public abstract class DocumentTemplate extends Context<DocumentTemplate> impleme
         }
     }
 
+    public DocumentState getDocumentState() {
+        return documentState;
+    }
+
+    public void setDocumentState(DocumentState documentState) {
+        this.documentState = documentState;
+    }
+
     @Override
     public void addElement(User observer) {
         waiting.offer(observer);
@@ -61,7 +70,7 @@ public abstract class DocumentTemplate extends Context<DocumentTemplate> impleme
     @Override
     public void removeElement() {
         User firstInQueue = waiting.poll();
-        firstInQueue.borrow(this, firstInQueue.getBorrowType());
+        firstInQueue.borrow(this, new LongBorrow());
         this.sendNotifications("El recurso: " + this.resource + "fue prestado a " + firstInQueue + " que estaba esperando el libro");
     }
 

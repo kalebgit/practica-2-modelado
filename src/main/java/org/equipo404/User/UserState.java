@@ -17,6 +17,6 @@ public abstract class UserState implements State<User> {
    public void setContext(User context) {
       this.context = context;
    }
-    abstract void borrow(DocumentTemplate doc, BorrowType borrowType);
+    protected abstract void borrow(DocumentTemplate doc, BorrowType borrowType);
    abstract void returnBorrowedDoc();
 }

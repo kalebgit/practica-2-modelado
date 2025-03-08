@@ -9,6 +9,7 @@ public class Regular extends UserState{
 
     @Override
     public void borrow(DocumentTemplate doc, BorrowType borrowType) {
+        TerminalUI.success("El usuario " + context().getEmail() + " ha tomado prestado " + doc.getResource().getTitle());
         if(doc.lend()) {
             context().setBorrowType(borrowType);
             context().setDocumentBorrowed(doc);
@@ -20,10 +21,11 @@ public class Regular extends UserState{
 
     @Override
     void returnBorrowedDoc() {
-        TerminalUI.success("😊 Gracias por ser responsable, usuario " + context() +
+        TerminalUI.success("😊 Gracias por ser responsable, usuario " + context().getEmail() +
                 " y devolverlo a tiempo");
         DocumentTemplate doc = context().getDocumentBorrowed();
         doc.changeState(new Available());
+        doc.getDocumentState().setContext(doc);
         doc.checkWaitingUsers();
         context().setDocumentBorrowed(null);
     }

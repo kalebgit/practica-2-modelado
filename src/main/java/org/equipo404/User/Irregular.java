@@ -7,8 +7,8 @@ import org.equipo404.util.TerminalUI;
 public class Irregular extends UserState {
     @Override
     public void borrow(DocumentTemplate doc, BorrowType borrowType) {
-        TerminalUI.error("El usuario " + this.context() +
-                " no puede pedir prestado " + doc + " porque es un usuario irregular");
+        TerminalUI.error("El usuario " + this.context().getEmail() +
+                " no puede pedir prestado " + doc.getResource().getTitle() + " porque es un usuario irregular" );
     }
 
     @Override
@@ -18,7 +18,9 @@ public class Irregular extends UserState {
         DocumentTemplate doc = context().getDocumentBorrowed();
         doc.changeState(new Available());
         doc.checkWaitingUsers();
+        doc.getDocumentState().setContext(doc);
         context().changeState(new Regular());
+        context().getState().setContext(context());
         context().setDocumentBorrowed(null);
     }
     @Override

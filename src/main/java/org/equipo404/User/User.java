@@ -80,15 +80,24 @@ public class User extends Context<User> implements Observer {
 
     public void changeState(UserState state) {
         this.state = state;
+        this.state.setContext(this);
     }
     /**
      * Realiza la devolución del documento prestado.
      */
 
+    public void checkRegularity(){
+        int daysLeft = this.getDaysLeftToDeadline();
+        if(daysLeft < 0){
+            changeState(new Irregular());
+            TerminalUI.error("😡Ahora el usuario + " + this.getEmail() + " moroso por tener "  + (-daysLeft) + " dias de retraso");
+        }
+    }
 
     public void returnBorrowedDoc(){
         state.returnBorrowedDoc();
     }
+
 
     //getters y setters
     /**
@@ -96,6 +105,8 @@ public class User extends Context<User> implements Observer {
      *
      * @param message El mensaje recibido.
      */
+
+
 
     @Override
     public void update(String message) {
@@ -139,6 +150,9 @@ public class User extends Context<User> implements Observer {
      * @return La representación en texto del estado del usuario.
      */
 
+    public UserState getState() {
+        return state;
+    }
 
 
     @Override
