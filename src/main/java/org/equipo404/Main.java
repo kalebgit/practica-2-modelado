@@ -8,11 +8,22 @@ import org.equipo404.User.ExpressBorrow;
 import org.equipo404.User.LongBorrow;
 import org.equipo404.Library.*;
 import java.util.Random;
+/**
+ * Clase principal que ejecuta la simulación del sistema de biblioteca digital.
+ * 
+ * @autores Emiliano Kaleb Jimenez Rivera, Bedoya Tellez Ariadna Valeria, Sanchez Soto Saul
+ * @version 1.0
+ */
 
 
 import java.util.*;
 
 public class Main {
+    /**
+     * Método principal que inicia la ejecución del programa.
+     * 
+     * @param args Argumentos de la línea de comandos (no utilizados).
+     */
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
@@ -72,6 +83,12 @@ public class Main {
         // ============================
         showMenu(scanner, library, users, borrowedDays, currentDay);
     }
+    /**
+     * Llena la biblioteca con documentos digitales.
+     * 
+     * @param library Biblioteca a llenar.
+     * @return Lista de documentos generados.
+     */
 
     private static List<DocumentTemplate> fillDocuments(Library<Resource> library){
         List<DocumentTemplate> docs = new ArrayList<>();
@@ -82,6 +99,12 @@ public class Main {
         }
         return docs;
     }
+    /**
+     * Crea un documento digital aleatorio a partir de un recurso.
+     * 
+     * @param src Recurso base.
+     * @return Documento generado.
+     */
     private static DocumentTemplate buildDoc(Resource src) {
         Random rand = new Random();
         return switch (rand.nextInt(3) + 1) {  // Se asegura de que el número esté entre 1 y 3
@@ -91,6 +114,11 @@ public class Main {
             default -> new PDFDocument(src, new Available()); // Nunca se ejecutará, pero es buena práctica
         };
     }
+    /**
+     * Crea y devuelve una lista de colecciones de recursos.
+     * 
+     * @return Lista de colecciones de recursos.
+     */
 
 
 
@@ -281,6 +309,11 @@ public class Main {
         scanner.nextLine();
         return users.stream().filter(u -> u.getId() == userId).findFirst().orElse(null);
     }
+    /**
+     * Muestra la lista de usuarios registrados.
+     * 
+     * @param users Lista de usuarios.
+     */
     private static void showAllUsers(List<User> users) {
         TerminalUI.info("Lista de Usuarios:");
 
