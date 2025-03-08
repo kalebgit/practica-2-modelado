@@ -12,11 +12,11 @@ public class MagazinesCollection extends ResourceCollection<Magazine> {
     public MagazinesCollection(CollectionIteratorStrategy<Magazine> iteratorStrategy, Magazine[] magazines) {
         super(iteratorStrategy);
         magazinesArray = new IterableArray<>(magazines);
-        iteratorStrategy.setRawCollectionIterator(magazinesArray.iterator());
+        iteratorStrategy.setIterable(magazinesArray);
     }
 
     @Override
     public Iterator<Magazine> iterator() {
-        return this.getIteratorStrategy().rawCollectionIterator;
+        return this.getIteratorStrategy().getRawCollectionIterator();
     }
 }

@@ -27,10 +27,16 @@ public abstract class ResourceCollection<T extends Resource> implements Iterable
         sb.append("+------------------+\n");
         sb.append("|   Elementos     |\n");
         sb.append("+------------------+\n");
-        for (T elemento : this) { // Usa el iterador de la clase
-            sb.append("| ").append(String.format("%-16s", elemento)).append("|\n");
+
+        boolean hasElements = false;
+        for (T elemento : this) {
+            hasElements = true;
+            sb.append("| ").append(String.format("%-16s", elemento.getTitle())).append("|\n"); // getTitle() en lugar de toString()
+        }
+
+        if (!hasElements) {
+            sb.append("|    (Vacío)      |\n");
         }
         sb.append("+------------------+");
         return sb.toString();
-    }
-}
+    }}

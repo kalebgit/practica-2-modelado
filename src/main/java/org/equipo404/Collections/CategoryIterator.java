@@ -11,15 +11,15 @@ public class CategoryIterator<T extends Resource> extends CollectionIteratorStra
     ResourceCategory category;
     private T nextElement;
 
-    public CategoryIterator(Iterator<T> iterator, ResourceCategory resourceCategory) {
-        super(iterator);
+    public CategoryIterator(Iterable<T> iterable, ResourceCategory resourceCategory) {
+        super(iterable);
         this.category = resourceCategory;
     }
 
     private void advance(){
         nextElement = null;
-        while(this.rawCollectionIterator.hasNext()){
-            T element = next();
+        while(this.getRawCollectionIterator().hasNext()){
+            T element = this.getRawCollectionIterator().next();
             if(element.getResourceCategory() == category){
                 nextElement = element;
                 break;

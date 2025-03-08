@@ -7,6 +7,8 @@ import org.equipo404.util.TerminalUI;
 import org.equipo404.User.ExpressBorrow;
 import org.equipo404.User.LongBorrow;
 import org.equipo404.Library.*;
+import java.util.Random;
+
 
 import java.util.*;
 
@@ -15,8 +17,9 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
 
         // Crear colecciones iniciales
-        List<ResourceCollection> resources = createResourceCollection();
-        Library library = new Library(resources);
+        List<ResourceCollection<? extends Resource>> resources = createResourceCollection();
+        Library<Resource> library = new Library<>(resources);
+        List<DocumentTemplate> documents = fillDocuments(library);
 
         List<User> users = new ArrayList<>();
         Map<User, Integer> borrowedDays = new HashMap<>();
@@ -28,7 +31,8 @@ public class Main {
         User jorge = new User(3, "jorge@example.com");
         User ana = new User(4, "ana@example.com");
         users.addAll(List.of(carlos, mariana, jorge, ana));
-
+        TerminalUI.info("Estos son los usuarios disponibles para usar");
+        showAllUsers(users);
         // ============================
         //        SIMULACIÓN
         // ============================
@@ -46,16 +50,20 @@ public class Main {
         // CASO 2: Mariana pide un libro
         TerminalUI.info("Mariana solicita 'Cálculo Avanzado' con préstamo normal");
         DocumentTemplate doc2 = createDocument(library, "Cálculo Avanzado", 2);
-        library.borrowMaterial(mariana, "Cálculo Avanzado", new LongBorrow(15), doc2);
+        library.borrowMaterial(mariana, "Cálculo Avanzado", new LongBorrow(), doc2);
 
         // CASO 3: Jorge busca un libro y elige una revista
         TerminalUI.info("Jorge explora la biblioteca");
         library.showLibraryResources(); // Usar showLibraryResources en lugar de exploreMaterials
-        TerminalUI.info("Jorge elige una revista");
+        Resource cienSoledad = library.findResourceByTitle("Cien años de soledad");
+        library.borrowMaterial(jorge, cienSoledad.getTitle(), new ExpressBorrow(), createDocument());
+
 
         // CASO 4: Ana reserva 'Cien años de soledad'
         TerminalUI.info("Ana intenta pedir 'Cien años de soledad', pero está prestado");
         library.reserveMaterial(ana, "Cien años de soledad", createDocument(library, "Cien años de soledad", 3));
+
+        // Se envia notificacion cuando
 
         TerminalUI.success("FIN DE SIMULACIÓN");
 
@@ -65,59 +73,78 @@ public class Main {
         showMenu(scanner, library, users, borrowedDays, currentDay);
     }
 
+    private static List<DocumentTemplate> fillDocuments(Library<Resource> library){
+        List<DocumentTemplate> docs = new ArrayList<>();
+        for(ResourceCollection<? extends Resource> collection : library.getResourceCollections()){
+            for(Resource src : collection){
+                docs.add(buildDoc(src));
+            }
+        }
+        return docs;
+    }
+    private static DocumentTemplate buildDoc(Resource src) {
+        Random rand = new Random();
+        return switch (rand.nextInt(3) + 1) {  // Se asegura de que el número esté entre 1 y 3
+            case 1 -> new PDFDocument(src, new Available());
+            case 2 -> new EPUBDocument(src, new Available());
+            case 3 -> new MOBIDocument(src, new Available());
+            default -> new PDFDocument(src, new Available()); // Nunca se ejecutará, pero es buena práctica
+        };
+    }
 
-    private static List<ResourceCollection> createResourceCollection() {
-        List<ResourceCollection> collections = new ArrayList<>();
 
-        // Crear lista de libros (usa List<Book>)
-        List<Book> booksList = new ArrayList<>();
+
+    private static List<ResourceCollection<? extends Resource>> createResourceCollection() {
+        List<ResourceCollection<? extends Resource>> collections = new ArrayList<>();
+
+        // Libros
+        ArrayList<Book> booksList = new ArrayList<>();
         booksList.add(new Book("El algoritmo infinito", ResourceCategory.CIENCIA));
         booksList.add(new Book("La guía del programador", ResourceCategory.BUSINESS));
         booksList.add(new Book("Mentes brillantes", ResourceCategory.ARTE));
 
         BooksCollection booksCollection = new BooksCollection(
-                new CategoryIterator<>(booksList.iterator(), ResourceCategory.CIENCIA), booksList);
+                new CategoryIterator<>(booksList, ResourceCategory.CIENCIA), booksList);
 
-        // Crear arreglo de revistas (usa Magazine[])
+        // Revistas
         Magazine[] magazinesArray = {
                 new Magazine("Historia en papel", ResourceCategory.CIENCIA),
                 new Magazine("Descifrando el pasado", ResourceCategory.SALUD)
         };
 
         MagazinesCollection magazinesCollection = new MagazinesCollection(
-                new CategoryIterator<>(Arrays.stream(magazinesArray).iterator(), ResourceCategory.SALUD), magazinesArray);
+                new CategoryIterator<>(Arrays.stream(magazinesArray).toList(), ResourceCategory.SALUD), magazinesArray);
 
-        // Crear mapa de audiolibros (usa Hashtable<AudioBook, Integer>)
+        // Audiolibros
         Hashtable<AudioBook, Integer> audiobooksTable = new Hashtable<>();
         audiobooksTable.put(new AudioBook("Filosofía moderna", ResourceCategory.ARTE), 1);
         audiobooksTable.put(new AudioBook("La ciencia de lo imposible", ResourceCategory.CIENCIA), 1);
 
         AudioBooksCollection audioBooksCollection = new AudioBooksCollection(
-                new CategoryIterator<>(audiobooksTable.keySet().iterator(), ResourceCategory.ARTE), audiobooksTable);
+                new CategoryIterator<>(audiobooksTable.keySet().stream().toList(), ResourceCategory.ARTE), audiobooksTable);
 
-        // Agregar colecciones concretas a la biblioteca
+        // Agregar colecciones a la biblioteca
         collections.add(booksCollection);
         collections.add(magazinesCollection);
         collections.add(audioBooksCollection);
 
+        System.out.println("📌 Total de colecciones creadas: " + collections.size());
+        for (ResourceCollection<? extends Resource> collection : collections) {
+            System.out.println("📖 Clase: " + collection.getClass().getSimpleName() + " - Elementos: " + getCollectionSize(collection));
+        }
+
+
         return collections;
     }
 
-
-    // Método ajustado para crear documentos
-    private static DocumentTemplate createDocument(Library library, String title, int formatType) {
-        Resource resource = library.findResourceByTitle(title);
-        if (resource == null) {
-            resource = new Book("Libro por defecto", ResourceCategory.CIENCIA); // Por defecto, un libro
-            resource.setTitle(title);
+    private static int getCollectionSize(ResourceCollection<? extends Resource> collection) {
+        int size = 0;
+        for (Resource resource : collection) {
+            size++;
         }
-        return switch (formatType) {
-            case 1 -> new PDFDocument(resource, new Available());
-            case 2 -> new EPUBDocument(resource, new Available());
-            case 3 -> new MOBIDocument(resource, new Available());
-            default -> new PDFDocument(resource, new Available());
-        };
+        return size;
     }
+
 
     private static void showMenu(Scanner scanner, Library library, List<User> users, Map<User, Integer> borrowedDays, int currentDay) {
         while (true) {
@@ -189,7 +216,7 @@ public class Main {
         int type = scanner.nextInt();
         scanner.nextLine();
 
-        BorrowType borrowType = (type == 1) ? new LongBorrow(15) : new ExpressBorrow(7);
+        BorrowType borrowType = (type == 1) ? new LongBorrow() : new ExpressBorrow();
         if (library.borrowMaterial(user, title, borrowType, document)) {
             borrowedDays.put(user, currentDay);
             String formatName = switch (formatType) {
@@ -253,5 +280,17 @@ public class Main {
         int userId = scanner.nextInt();
         scanner.nextLine();
         return users.stream().filter(u -> u.getId() == userId).findFirst().orElse(null);
+    }
+    private static void showAllUsers(List<User> users) {
+        TerminalUI.info("Lista de Usuarios:");
+
+        if (users.isEmpty()) {
+            TerminalUI.warning("No hay usuarios registrados.");
+            return;
+        }
+
+        for (User user : users) {
+            TerminalUI.print("ID: " + user.getId() + " | Email: " + user.getEmail());
+        }
     }
 }

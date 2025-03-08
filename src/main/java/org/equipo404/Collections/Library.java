@@ -8,14 +8,13 @@ import org.equipo404.util.TerminalUI;
 
 import java.util.List;
 
-public class Library{
+public class Library<T extends Resource>{
 
-    private List<ResourceCollection> resourceCollections;
+    private List<ResourceCollection<? extends T>> resourceCollections;
 
-    public Library(List<ResourceCollection> resourceCollections) {
+    public Library(List<ResourceCollection<? extends T>> resourceCollections) {
         this.resourceCollections = resourceCollections;
     }
-
     /**
      * Muestra todos los recursos de la biblioteca en un formato bonito.
      */
@@ -24,11 +23,28 @@ public class Library{
         System.out.println("    📚 RECURSOS DE LA BIBLIOTECA    ");
         System.out.println("═══════════════════════════");
 
-        for (ResourceCollection<?> collection : resourceCollections) {
+        if (resourceCollections == null || resourceCollections.isEmpty()) {
+            TerminalUI.error("⚠️ Error: La lista de colecciones está vacía.");
+            return;
+        }
+
+
+        for (ResourceCollection<? extends T> collection : resourceCollections) {
+            if(resourceCollections == null){
+                TerminalUI.error("esta vacia colecciones");
+            }
             System.out.println(collection.toString());
         }
     }
 
+//    private int getCollectionSize(ResourceCollection<? extends T> collection) {
+//        int size = 0;
+//        for (T resource : collection) {
+//            size++;
+//        }
+//        return size;
+//    }
+//
     /**
      * Muestra una sección específica de la biblioteca.
      */
@@ -101,7 +117,6 @@ public class Library{
         }
 
         document.reserve(user);
-        TerminalUI.success("Material reservado. Recibirás una notificación cuando esté disponible.");
     }
 
     public void returnMaterial(User user, String title) {
@@ -111,6 +126,10 @@ public class Library{
         } else {
             TerminalUI.error("No tienes ese material prestado.");
         }
+    }
+
+    public List<ResourceCollection<? extends T>> getResourceCollections() {
+        return resourceCollections;
     }
 
 }

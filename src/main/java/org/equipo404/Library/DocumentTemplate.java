@@ -3,6 +3,7 @@ package org.equipo404.Library;
 import org.equipo404.DesignPatterns.Context;
 import org.equipo404.DesignPatterns.Subject;
 import org.equipo404.User.User;
+import org.equipo404.util.TerminalUI;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -32,7 +33,8 @@ public abstract class DocumentTemplate extends Context<DocumentTemplate> impleme
 
 
     public void reserve(User user){
-        addElement(user);
+        TerminalUI.success("Material reservado. Recibirás una notificación cuando esté disponible.");
+        this.documentState.reserve(user);
     }
 
     public abstract void getFormat();

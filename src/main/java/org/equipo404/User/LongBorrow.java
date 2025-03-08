@@ -3,7 +3,7 @@ package org.equipo404.User;
 public class LongBorrow extends BorrowType{
     private int renews = 0;
 
-    public LongBorrow(int daysLeft){
+    public LongBorrow(){
         super(15);
     }
 

@@ -1,6 +1,7 @@
 package org.equipo404.Library;
 
 public abstract class Resource {
+    private int id;
     private String title;
     private ResourceCategory ResourceCategory;
 
@@ -24,4 +25,6 @@ public abstract class Resource {
     public void setTitle(String title) {
         this.title = title;
     }
+
+
 }

@@ -69,6 +69,14 @@ public class User extends Context<User> implements Observer {
         this.id = id;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public void setDocumentBorrowed(DocumentTemplate documentBorrowed) {
         this.documentBorrowed = documentBorrowed;
     }

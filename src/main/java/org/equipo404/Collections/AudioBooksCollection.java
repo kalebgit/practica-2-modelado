@@ -14,11 +14,11 @@ public class AudioBooksCollection extends ResourceCollection<AudioBook>{
     public AudioBooksCollection(CollectionIteratorStrategy<AudioBook> iteratorStrategy, Hashtable<AudioBook, Integer> audiobooks) {
         super(iteratorStrategy);
         audiobooksHashMap = audiobooks;
-        iteratorStrategy.setRawCollectionIterator(audiobooksHashMap.keySet().iterator());
+        iteratorStrategy.setIterable(audiobooksHashMap.keySet().stream().toList());
     }
 
     @Override
     public Iterator<AudioBook> iterator() {
-        return this.getIteratorStrategy().rawCollectionIterator;
+        return this.getIteratorStrategy().getRawCollectionIterator();
     }
 }
