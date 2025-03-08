@@ -6,8 +6,8 @@ import java.util.Iterator;
 
 public class NormalIterator<T extends Resource> extends CollectionIteratorStrategy<T> {
 
-    public NormalIterator(Iterator<T> iterator) {
-        super(iterator);
+    public NormalIterator(Iterable<T> iterable) {
+        super(iterable);
     }
 
     @Override

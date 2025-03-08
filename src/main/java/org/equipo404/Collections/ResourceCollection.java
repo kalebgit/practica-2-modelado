@@ -21,16 +21,32 @@ public abstract class ResourceCollection<T extends Resource> implements Iterable
         this.iteratorStrategy = iteratorStrategy;
     }
 
+
+
+    @Override
+    public Iterator<T> iterator(){
+        return this.iteratorStrategy;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("+------------------+\n");
         sb.append("|   Elementos     |\n");
         sb.append("+------------------+\n");
-        for (T elemento : this) { // Usa el iterador de la clase
-            sb.append("| ").append(String.format("%-16s", elemento)).append("|\n");
+
+        boolean hasElements = false;
+        for (T elemento : this) {
+            hasElements = true;
+            sb.append("| ").append(String.format("%-21s", elemento)).append("|\n"); // getTitle() en lugar de toString()
+        }
+
+        if (!hasElements) {
+            sb.append("|    (Vacío)      |\n");
         }
         sb.append("+------------------+");
         return sb.toString();
     }
+
+
 }
