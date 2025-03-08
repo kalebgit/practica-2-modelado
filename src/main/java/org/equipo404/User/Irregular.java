@@ -15,8 +15,9 @@ public class Irregular extends UserState {
     void returnBorrowedDoc() {
         TerminalUI.warning("😠 No es posible que el usuario " + context() +
                 " se haya tardado tanto en devolver el documento");
-        context().getDocumentBorrowed().changeState(new Available());
-        context().getDocumentBorrowed().checkWaitingUsers();
+        DocumentTemplate doc = context().getDocumentBorrowed();
+        doc.changeState(new Available());
+        doc.checkWaitingUsers();
         context().changeState(new Regular());
         context().setDocumentBorrowed(null);
     }
@@ -24,4 +25,5 @@ public class Irregular extends UserState {
     public String toString() {
         return "❌ Moroso";
     }
+
 }

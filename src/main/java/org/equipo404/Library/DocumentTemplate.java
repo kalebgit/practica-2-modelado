@@ -5,6 +5,7 @@ import org.equipo404.DesignPatterns.Subject;
 import org.equipo404.User.User;
 
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.Queue;
 
 public abstract class DocumentTemplate extends Context<DocumentTemplate> implements Subject<User> {
@@ -14,8 +15,10 @@ public abstract class DocumentTemplate extends Context<DocumentTemplate> impleme
 
     public DocumentTemplate(Resource resource, DocumentState documentState) {
         super(documentState);
+        documentState.setContext(this);
         this.resource = resource;
         this.documentState = documentState;
+        this.waiting = new LinkedList<>();
     }
 
 

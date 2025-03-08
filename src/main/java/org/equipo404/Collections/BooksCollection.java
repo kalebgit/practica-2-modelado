@@ -9,7 +9,7 @@ import java.util.List;
 public class BooksCollection extends ResourceCollection<Book>{
     List<Book> booksList;
 
-    public BooksCollection(CollectionIteratorStrategy<Book> iteratorStrategy, ArrayList<Book> books) {
+    public BooksCollection(CollectionIteratorStrategy<Book> iteratorStrategy, List<Book> books) {
         super(iteratorStrategy);
         booksList = books;
         iteratorStrategy.setRawCollectionIterator(booksList.iterator());

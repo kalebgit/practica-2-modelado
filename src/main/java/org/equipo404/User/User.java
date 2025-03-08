@@ -19,6 +19,8 @@ public class User extends Context<User> implements Observer {
 
     public User(int id, String email) {
         super(new Regular());
+        this.state = new Regular();
+        this.state.setContext(this);
         this.id = id;
         this.email = email;
     }

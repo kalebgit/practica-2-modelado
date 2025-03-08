@@ -4,6 +4,11 @@ public abstract class Resource {
     private String title;
     private ResourceCategory ResourceCategory;
 
+    public Resource(String title, org.equipo404.Library.ResourceCategory resourceCategory) {
+        this.title = title;
+        ResourceCategory = resourceCategory;
+    }
+
     public ResourceCategory getResourceCategory() {
         return ResourceCategory;
     }

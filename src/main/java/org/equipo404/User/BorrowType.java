@@ -9,4 +9,6 @@ public abstract class BorrowType {
     public void addDaysLeft(int daysAdded){
         this.daysLeft += daysAdded;
     }
+    public void substractDaysLet(int daysSubstracted){this.daysLeft-= daysSubstracted;}
+
 }

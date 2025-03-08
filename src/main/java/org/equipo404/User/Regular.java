@@ -22,8 +22,9 @@ public class Regular extends UserState{
     void returnBorrowedDoc() {
         TerminalUI.success("😊 Gracias por ser responsable, usuario " + context() +
                 " y devolverlo a tiempo");
-        context().getDocumentBorrowed().changeState(new Available());
-        context().getDocumentBorrowed().checkWaitingUsers();
+        DocumentTemplate doc = context().getDocumentBorrowed();
+        doc.changeState(new Available());
+        doc.checkWaitingUsers();
         context().setDocumentBorrowed(null);
     }
 
@@ -31,5 +32,6 @@ public class Regular extends UserState{
     public String toString() {
         return "✅ Activo";
     }
+
 }
 
