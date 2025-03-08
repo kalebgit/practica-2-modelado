@@ -1,6 +1,13 @@
 package org.equipo404.util;
 
 import java.util.Scanner;
+/**
+ * Clase de utilidad para la interacción con la terminal.
+ * Proporciona métodos para mostrar mensajes formateados, menús y capturar entradas del usuario.
+ * 
+ * @autores Emiliano Kaleb Jimenez Rivera, Bedoya Tellez Ariadna Valeria, Sanchez Soto Saul
+ * @version 1.0
+ */
 
 public class TerminalUI {
 
