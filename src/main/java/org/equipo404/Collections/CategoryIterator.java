@@ -67,7 +67,9 @@ public class CategoryIterator<T extends Resource> extends CollectionIteratorStra
      * @return El siguiente recurso de la categoría filtrada.
      * @throws NoSuchElementException Si no hay más elementos disponibles.
      */
+
     
+
 
     @Override
     public T next() {
