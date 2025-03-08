@@ -6,6 +6,7 @@ import org.equipo404.User.BorrowType;
 import org.equipo404.User.User;
 import org.equipo404.util.TerminalUI;
 
+import java.security.interfaces.RSAKey;
 import java.util.List;
 
 public class Library<T extends Resource>{
@@ -86,15 +87,27 @@ public class Library<T extends Resource>{
         return null;
     }
 
+
+    public Resource findResourceById(int id){
+        for (ResourceCollection<?> collection : resourceCollections) {
+            for (Resource resource : collection) {
+                if (resource.getId() == id) {
+                    return resource;
+                }
+            }
+        }
+        return null;
+
+    }
+
     /**
      * Realiza el préstamo de un material a un usuario
      * @param user Usuario que solicita el préstamo
-     * @param title Título del recurso
      * @param borrowType Tipo de préstamo (Regular o Express)
      * @param document Documento específico en el formato solicitado
      * @return true si el préstamo fue exitoso, false en caso contrario
      */
-    public boolean borrowMaterial(User user, String title, BorrowType borrowType, DocumentTemplate document) {
+    public boolean borrowMaterial(User user, BorrowType borrowType, DocumentTemplate document) {
         if (document == null) {
             TerminalUI.error("El material solicitado no existe en la biblioteca.");
             return false;
@@ -107,10 +120,9 @@ public class Library<T extends Resource>{
     /**
      * Reserva un material para un usuario
      * @param user Usuario que solicita la reserva
-     * @param title Título del recurso
      * @param document Documento específico en el formato solicitado
      */
-    public void reserveMaterial(User user, String title, DocumentTemplate document) {
+    public void reserveMaterial(User user, DocumentTemplate document) {
         if (document == null) {
             TerminalUI.error("El material solicitado no existe en la biblioteca.");
             return;
@@ -119,8 +131,8 @@ public class Library<T extends Resource>{
         document.reserve(user);
     }
 
-    public void returnMaterial(User user, String title) {
-        if (user.getDocumentBorrowed() != null && user.getDocumentBorrowed().getResource().getTitle().equalsIgnoreCase(title)) {
+    public void returnMaterial(User user, int id) {
+        if (user.getDocumentBorrowed() != null && user.getDocumentBorrowed().getResource().getId() == id) {
             user.returnBorrowedDoc();
             TerminalUI.success("Material devuelto a la biblioteca.");
         } else {

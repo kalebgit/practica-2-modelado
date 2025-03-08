@@ -31,7 +31,7 @@ public abstract class ResourceCollection<T extends Resource> implements Iterable
         boolean hasElements = false;
         for (T elemento : this) {
             hasElements = true;
-            sb.append("| ").append(String.format("%-16s", elemento.getTitle())).append("|\n"); // getTitle() en lugar de toString()
+            sb.append("| ").append(String.format("%-21s", "ID: "+elemento.getId()+elemento.getTitle())).append("|\n"); // getTitle() en lugar de toString()
         }
 
         if (!hasElements) {

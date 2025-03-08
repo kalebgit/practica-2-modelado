@@ -1,11 +1,14 @@
 package org.equipo404.Library;
 
+import java.util.Objects;
+
 public abstract class Resource {
     private int id;
     private String title;
     private ResourceCategory ResourceCategory;
 
-    public Resource(String title, org.equipo404.Library.ResourceCategory resourceCategory) {
+    public Resource(int id,String title, org.equipo404.Library.ResourceCategory resourceCategory) {
+        this.id = id;
         this.title = title;
         ResourceCategory = resourceCategory;
     }
@@ -26,5 +29,23 @@ public abstract class Resource {
         this.title = title;
     }
 
+    public int getId() {
+        return id;
+    }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Resource resource = (Resource) o;
+        return id == resource.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 }

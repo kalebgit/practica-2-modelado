@@ -13,13 +13,13 @@ import java.util.Random;
 import java.util.*;
 
 public class Main {
+    public static int amountDocs = 0;
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
         // Crear colecciones iniciales
         List<ResourceCollection<? extends Resource>> resources = createResourceCollection();
         Library<Resource> library = new Library<>(resources);
-        List<DocumentTemplate> documents = fillDocuments(library);
 
         List<User> users = new ArrayList<>();
         Map<User, Integer> borrowedDays = new HashMap<>();
@@ -40,8 +40,8 @@ public class Main {
 
         // CASO 1: Carlos se vuelve moroso
         TerminalUI.info("Carlos pide un libro y lo olvida devolver por 30 días");
-        DocumentTemplate doc1 = createDocument(library, "Libro 1", 1);
-        library.borrowMaterial(carlos, "Libro 1", new ExpressBorrow(7), doc1);
+        DocumentTemplate doc1 = createDocument(library, 0, 1);
+        library.borrowMaterial(carlos, new ExpressBorrow(), doc1);
         borrowedDays.put(carlos, currentDay);
         currentDay += 30;
         carlos.getBorrowType().substractDaysLet(30);
@@ -49,19 +49,19 @@ public class Main {
 
         // CASO 2: Mariana pide un libro
         TerminalUI.info("Mariana solicita 'Cálculo Avanzado' con préstamo normal");
-        DocumentTemplate doc2 = createDocument(library, "Cálculo Avanzado", 2);
-        library.borrowMaterial(mariana, "Cálculo Avanzado", new LongBorrow(), doc2);
+        DocumentTemplate doc2 = createDocument(library, 5, 2);
+        library.borrowMaterial(mariana, new LongBorrow(), doc2);
 
         // CASO 3: Jorge busca un libro y elige una revista
         TerminalUI.info("Jorge explora la biblioteca");
         library.showLibraryResources(); // Usar showLibraryResources en lugar de exploreMaterials
-        Resource cienSoledad = library.findResourceByTitle("Cien años de soledad");
-        library.borrowMaterial(jorge, cienSoledad.getTitle(), new ExpressBorrow(), createDocument());
+        DocumentTemplate cienSoledad = createDocument(library, 3, 3);
+        library.borrowMaterial(jorge, new ExpressBorrow(), cienSoledad);
 
 
         // CASO 4: Ana reserva 'Cien años de soledad'
         TerminalUI.info("Ana intenta pedir 'Cien años de soledad', pero está prestado");
-        library.reserveMaterial(ana, "Cien años de soledad", createDocument(library, "Cien años de soledad", 3));
+        library.reserveMaterial(ana, cienSoledad);
 
         // Se envia notificacion cuando
 
@@ -73,25 +73,20 @@ public class Main {
         showMenu(scanner, library, users, borrowedDays, currentDay);
     }
 
-    private static List<DocumentTemplate> fillDocuments(Library<Resource> library){
-        List<DocumentTemplate> docs = new ArrayList<>();
-        for(ResourceCollection<? extends Resource> collection : library.getResourceCollections()){
-            for(Resource src : collection){
-                docs.add(buildDoc(src));
-            }
+
+    // Método ajustado para crear documentos
+    private static DocumentTemplate createDocument(Library library, int id, int formatType) {
+        Resource resource = library.findResourceById(id);
+        if (resource == null) {
+            return null;
         }
-        return docs;
-    }
-    private static DocumentTemplate buildDoc(Resource src) {
-        Random rand = new Random();
-        return switch (rand.nextInt(3) + 1) {  // Se asegura de que el número esté entre 1 y 3
-            case 1 -> new PDFDocument(src, new Available());
-            case 2 -> new EPUBDocument(src, new Available());
-            case 3 -> new MOBIDocument(src, new Available());
-            default -> new PDFDocument(src, new Available()); // Nunca se ejecutará, pero es buena práctica
+        return switch (formatType) {
+            case 1 -> new PDFDocument(resource, new Available());
+            case 2 -> new EPUBDocument(resource, new Available());
+            case 3 -> new MOBIDocument(resource, new Available());
+            default -> new PDFDocument(resource, new Available());
         };
     }
-
 
 
     private static List<ResourceCollection<? extends Resource>> createResourceCollection() {
@@ -99,17 +94,18 @@ public class Main {
 
         // Libros
         ArrayList<Book> booksList = new ArrayList<>();
-        booksList.add(new Book("El algoritmo infinito", ResourceCategory.CIENCIA));
-        booksList.add(new Book("La guía del programador", ResourceCategory.BUSINESS));
-        booksList.add(new Book("Mentes brillantes", ResourceCategory.ARTE));
+        booksList.add(new Book(amountDocs, "El algoritmo infinito", ResourceCategory.CIENCIA));
+        booksList.add(new Book(amountDocs++, "La guía del programador", ResourceCategory.BUSINESS));
+        booksList.add(new Book(amountDocs++, "Mentes brillantes", ResourceCategory.ARTE));
+        booksList.add(new Book(amountDocs++, "Cien años de soledad", ResourceCategory.LITERATURA));
 
         BooksCollection booksCollection = new BooksCollection(
                 new CategoryIterator<>(booksList, ResourceCategory.CIENCIA), booksList);
 
         // Revistas
         Magazine[] magazinesArray = {
-                new Magazine("Historia en papel", ResourceCategory.CIENCIA),
-                new Magazine("Descifrando el pasado", ResourceCategory.SALUD)
+                new Magazine(amountDocs++, "Historia en papel", ResourceCategory.CIENCIA),
+                new Magazine(amountDocs++, "Descifrando el pasado", ResourceCategory.SALUD)
         };
 
         MagazinesCollection magazinesCollection = new MagazinesCollection(
@@ -117,11 +113,12 @@ public class Main {
 
         // Audiolibros
         Hashtable<AudioBook, Integer> audiobooksTable = new Hashtable<>();
-        audiobooksTable.put(new AudioBook("Filosofía moderna", ResourceCategory.ARTE), 1);
-        audiobooksTable.put(new AudioBook("La ciencia de lo imposible", ResourceCategory.CIENCIA), 1);
+        audiobooksTable.put(new AudioBook(amountDocs++, "Filosofía moderna", ResourceCategory.ARTE), 1);
+        audiobooksTable.put(new AudioBook(amountDocs++, "La ciencia de lo imposible", ResourceCategory.CIENCIA), 1);
 
         AudioBooksCollection audioBooksCollection = new AudioBooksCollection(
                 new CategoryIterator<>(audiobooksTable.keySet().stream().toList(), ResourceCategory.ARTE), audiobooksTable);
+
 
         // Agregar colecciones a la biblioteca
         collections.add(booksCollection);
@@ -199,14 +196,14 @@ public class Main {
         User user = getUserById(scanner, users);
         if (user == null) return;
 
-        TerminalUI.print("Ingrese el título del material a prestar:");
-        String title = scanner.nextLine();
+        int id = TerminalUI.inputInt("Ingrese el id del material a prestar:");
+
 
         TerminalUI.print("Seleccione formato de préstamo: 1. PDF | 2. EPUB | 3. MOBI");
         int formatType = scanner.nextInt();
         scanner.nextLine();
 
-        DocumentTemplate document = createDocument(library, title, formatType);
+        DocumentTemplate document = createDocument(library, id, formatType);
         if (document == null) {
             TerminalUI.error("El material solicitado no existe en la biblioteca.");
             return;
@@ -217,7 +214,7 @@ public class Main {
         scanner.nextLine();
 
         BorrowType borrowType = (type == 1) ? new LongBorrow() : new ExpressBorrow();
-        if (library.borrowMaterial(user, title, borrowType, document)) {
+        if (library.borrowMaterial(user, borrowType, document)) {
             borrowedDays.put(user, currentDay);
             String formatName = switch (formatType) {
                 case 1 -> "PDF";
@@ -234,10 +231,9 @@ public class Main {
         User user = getUserById(scanner, users);
         if (user == null) return;
 
-        TerminalUI.print("Ingrese el título del material a devolver:");
-        String title = scanner.nextLine();
+        int id = TerminalUI.inputInt("Ingrese el id del material a devolver:");
 
-        library.returnMaterial(user, title);
+        library.returnMaterial(user, id);
         borrowedDays.remove(user);
     }
 
@@ -246,20 +242,17 @@ public class Main {
         User user = getUserById(scanner, users);
         if (user == null) return;
 
-        TerminalUI.print("Ingrese el título del material a reservar:");
-        String title = scanner.nextLine();
+        int id = TerminalUI.inputInt("Ingrese el id del material a reservar:");
 
-        TerminalUI.print("Seleccione formato para reservar: 1. PDF | 2. EPUB | 3. MOBI");
-        int formatType = scanner.nextInt();
-        scanner.nextLine();
+        int formatType = TerminalUI.inputInt("Seleccione formato para reservar: 1. PDF | 2. EPUB | 3. MOBI");
 
-        DocumentTemplate document = createDocument(library, title, formatType);
+        DocumentTemplate document = createDocument(library, id, formatType);
         if (document == null) {
             TerminalUI.error("El material solicitado no existe en la biblioteca.");
             return;
         }
 
-        library.reserveMaterial(user, title, document);
+        library.reserveMaterial(user, document);
         String formatName = switch (formatType) {
             case 1 -> "PDF";
             case 2 -> "EPUB";
