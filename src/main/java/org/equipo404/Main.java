@@ -95,15 +95,19 @@ public class Main {
      */
 
 
-    // Método ajustado para crear documentos
+// Método ajustado para crear documentos
     private static DocumentTemplate createDocument(Library library, int id, int formatType) {
         Resource resource = library.findResourceById(id);
         if (resource == null) {
             return null;
         }
-        return docs;
-    }
-    /**
+        return switch (formatType) {
+            case 1 -> new PDFDocument(resource, new Available());
+            case 2 -> new EPUBDocument(resource, new Available());
+            case 3 -> new MOBIDocument(resource, new Available());
+            default -> new PDFDocument(resource, new Available());
+        };
+    }    /**
      * Crea un documento digital aleatorio a partir de un recurso.
      * 
      * @param src Recurso base.
