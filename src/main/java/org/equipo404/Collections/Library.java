@@ -1,10 +1,26 @@
 package org.equipo404.Collections;
 
 import java.util.List;
+/**
+ * Representa una biblioteca que contiene múltiples colecciones de recursos.
+ *
+ * @author Emiliano Kaleb Jimenez Rivera
+ * @author Bedoya Tellez Ariadna Valeria
+ * @author Sanchez Soto Saul
+ * @version 1.0
+ */
 
 public class Library {
+    /**
+     * Lista de colecciones de recursos dentro de la biblioteca.
+     */
 
     private List<ResourceCollection<?>> resourceCollections;
+    /**
+     * Constructor de la biblioteca.
+     *
+     * @param resourceCollections Lista de colecciones de recursos en la biblioteca.
+     */
 
     public Library(List<ResourceCollection<?>> resourceCollections) {
         this.resourceCollections = resourceCollections;
