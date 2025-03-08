@@ -33,8 +33,8 @@ public class CategoryIterator<T extends Resource> extends CollectionIteratorStra
      * @param resourceCategory Categoría de los recursos a iterar.
      */
 
-    public CategoryIterator(Iterator<T> iterator, ResourceCategory resourceCategory) {
-        super(iterator);
+    public CategoryIterator(Iterable<T> iterable, ResourceCategory resourceCategory) {
+        super(iterable);
         this.category = resourceCategory;
     }
     /**
@@ -43,8 +43,8 @@ public class CategoryIterator<T extends Resource> extends CollectionIteratorStra
 
     private void advance(){
         nextElement = null;
-        while(this.rawCollectionIterator.hasNext()){
-            T element = next();
+        while(this.getRawCollectionIterator().hasNext()){
+            T element = this.getRawCollectionIterator().next();
             if(element.getResourceCategory() == category){
                 nextElement = element;
                 break;
@@ -67,6 +67,9 @@ public class CategoryIterator<T extends Resource> extends CollectionIteratorStra
      * @return El siguiente recurso de la categoría filtrada.
      * @throws NoSuchElementException Si no hay más elementos disponibles.
      */
+
+    
+
 
     @Override
     public T next() {

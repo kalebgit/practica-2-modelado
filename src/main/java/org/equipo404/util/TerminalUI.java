@@ -1,15 +1,23 @@
 package org.equipo404.util;
 
 import java.util.Scanner;
+/**
+ * Clase de utilidad para la interacción con la terminal.
+ * Proporciona métodos para mostrar mensajes formateados, menús y capturar entradas del usuario.
+ * 
+ * @autores Emiliano Kaleb Jimenez Rivera, Bedoya Tellez Ariadna Valeria, Sanchez Soto Saul
+ * @version 1.0
+ */
 
 public class TerminalUI {
 
     private static final Scanner scanner = new Scanner(System.in);
 
     public static void printNotification(String message) {
-        int width = Math.min(message.length() + 4, 50); // Ajusta hasta un máximo de 50 caracteres
+        // Calcula el ancho basado en la longitud del mensaje
+        int width = message.length() + 4;
         String border = "┌" + "─".repeat(width) + "┐";
-        String middle = "│ " + message + " " + "│";
+        String middle = "│ " + message + " │";
         System.out.println(border);
         System.out.println("│  NOTIFICACIÓN" + " ".repeat(width - 15) + "│");
         System.out.println("├" + "─".repeat(width) + "┤");
@@ -57,21 +65,9 @@ public class TerminalUI {
      */
     private static void printBox(String message, String title) {
         // Determina el ancho interior del recuadro basado en el texto más largo (título o mensaje)
-        // agregando un margen de 2 espacios a cada lado, límite máximo de 50 caracteres.
+        // agregando un margen de 2 espacios a cada lado
         int contentLength = Math.max(message.length(), title.length());
-        int innerWidth = Math.min(contentLength + 4, 50);
-
-        // Si el mensaje o título sobrepasa el espacio, se trunca y agrega "..." para indicar omisión.
-        if (message.length() > innerWidth - 2) {
-            message = message.substring(0, innerWidth - 5) + "...";
-        }
-        if (title.length() > innerWidth - 2) {
-            title = title.substring(0, innerWidth - 5) + "...";
-        }
-
-        // Vuelve a calcular en caso de truncamiento.
-        contentLength = Math.max(message.length(), title.length());
-        innerWidth = Math.min(contentLength + 4, 50);
+        int innerWidth = contentLength + 4;
 
         // Construye las líneas del recuadro
         String topBorder    = "┌" + "─".repeat(innerWidth) + "┐";
@@ -102,9 +98,6 @@ public class TerminalUI {
         System.out.println(bottomBorder);
     }
 
-
-
-
     /**
      * Muestra un menú interactivo y devuelve la opción elegida.
      * @param title El título del menú.
@@ -112,15 +105,26 @@ public class TerminalUI {
      * @return La opción seleccionada por el usuario.
      */
     public static int showMenu(String title, String... options) {
-        System.out.println("╔════════════════════════════╗");
-        System.out.printf("║ %-26s ║%n", title);
-        System.out.println("╠════════════════════════════╣");
+        // Determinar el ancho necesario para el menú
+        int maxLength = title.length();
+        for (String option : options) {
+            maxLength = Math.max(maxLength, option.length());
+        }
+        int menuWidth = maxLength + 8; // 8 para acomodar números, espacios y bordes
+
+        String topBorder = "╔" + "═".repeat(menuWidth) + "╗";
+        String separator = "╠" + "═".repeat(menuWidth) + "╣";
+        String bottomBorder = "╚" + "═".repeat(menuWidth) + "╝";
+
+        System.out.println(topBorder);
+        System.out.printf("║ %-" + menuWidth + "s ║%n", title);
+        System.out.println(separator);
 
         for (int i = 0; i < options.length; i++) {
-            System.out.printf("║ %d. %-22s ║%n", i + 1, options[i]);
+            System.out.printf("║ %d. %-" + (menuWidth - 3) + "s ║%n", i + 1, options[i]);
         }
-        System.out.println("║ 0. Salir                  ║");
-        System.out.println("╚════════════════════════════╝");
+        System.out.printf("║ 0. %-" + (menuWidth - 3) + "s ║%n", "Salir");
+        System.out.println(bottomBorder);
 
         return getUserChoice(options.length);
     }
@@ -136,8 +140,10 @@ public class TerminalUI {
             System.out.print("Seleccione una opción: ");
             if (scanner.hasNextInt()) {
                 choice = scanner.nextInt();
+                scanner.nextLine(); // Limpiar el buffer
             } else {
                 scanner.next(); // Descartar entrada no válida
+                System.out.println("Opción inválida. Intente de nuevo.");
             }
         }
         return choice;
@@ -166,5 +172,4 @@ public class TerminalUI {
             }
         }
     }
-
 }
