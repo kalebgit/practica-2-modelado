@@ -16,6 +16,7 @@ import java.util.Iterator;
  */
 
 public abstract class CollectionIteratorStrategy<T extends Resource> implements Iterator<T> {
+
     /**
      * Iterador base de la colección de recursos.
      */
@@ -25,8 +26,9 @@ public abstract class CollectionIteratorStrategy<T extends Resource> implements 
      *
      * @param iterator Iterador base de la colección de recursos.
      */
-    public CollectionIteratorStrategy(Iterator<T> iterator){
-        this.rawCollectionIterator = iterator;
+    protected Iterable<T> collection;
+    public CollectionIteratorStrategy(Iterable<T> iterable){
+        this.collection = iterable;
     }
     /**
      * Obtiene el iterador base de la colección de recursos.
@@ -36,7 +38,7 @@ public abstract class CollectionIteratorStrategy<T extends Resource> implements 
     
 
     public Iterator<T> getRawCollectionIterator() {
-        return rawCollectionIterator;
+        return collection.iterator();
     }
     /**
      * Establece un nuevo iterador base para la colección de recursos.
@@ -44,7 +46,7 @@ public abstract class CollectionIteratorStrategy<T extends Resource> implements 
      * @param rawCollectionIterator Nuevo iterador base.
      */
 
-    public void setRawCollectionIterator(Iterator<T> rawCollectionIterator) {
-        this.rawCollectionIterator = rawCollectionIterator;
+    public void setIterable(Iterable<T> iterable){
+        this.collection = iterable;
     }
 }

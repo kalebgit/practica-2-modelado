@@ -7,5 +7,6 @@ package org.equipo404.DesignPatterns;
  */
 public interface State<T extends Context<T>> {
     T context();
+    void setContext(T context);
 }
 
